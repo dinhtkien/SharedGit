@@ -1,1 +1,0 @@
-savedcmd_/home/dinhtkien123/Workspace/firstGPIO/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/dinhtkien123/Workspace/firstGPIO/Module.symvers -T /home/dinhtkien123/Workspace/firstGPIO/modules.order -i Module.symvers -e 
