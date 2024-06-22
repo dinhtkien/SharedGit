@@ -1,11 +1,9 @@
 #include <linux/init.h>
 #include <linux/module.h>
-#include <linux/kernel.h>
 #include <linux/gpio.h>
-#include <linux/delay.h>
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("dinhtkien");
-MODULE_DESCRIPTION("A Button/LED test driver for the RPi");
+MODULE_DESCRIPTION("A Button/LED test driver for the Raspberrypi");
 MODULE_VERSION("0.1");
 
 static unsigned int gpioLED = 575;
@@ -22,6 +20,7 @@ static void __exit erpi_gpio_exit(void)
 {
 	printk("Goodbye from led driver");
 	gpio_set_value(gpioLED, 0);
+	gpio_free(gpioLED);
 }
 module_init(erpi_gpio_init);
 module_exit(erpi_gpio_exit);
