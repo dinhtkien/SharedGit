@@ -1,0 +1,1 @@
+savedcmd_/home/dinhtkien123/Workspace/SharedGit/leddriver/leddriver.ko := ld -r -EL -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T arch/arm/module.lds -o /home/dinhtkien123/Workspace/SharedGit/leddriver/leddriver.ko /home/dinhtkien123/Workspace/SharedGit/leddriver/leddriver.o /home/dinhtkien123/Workspace/SharedGit/leddriver/leddriver.mod.o;  true
