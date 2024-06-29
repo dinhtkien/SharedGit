@@ -1,0 +1,1 @@
+savedcmd_/home/dinhtkienpi5/Workspace/SharedGit/lrtimer/lrtimer.ko := ld -r -EL  -maarch64elf -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T arch/arm64/module.lds -o /home/dinhtkienpi5/Workspace/SharedGit/lrtimer/lrtimer.ko /home/dinhtkienpi5/Workspace/SharedGit/lrtimer/lrtimer.o /home/dinhtkienpi5/Workspace/SharedGit/lrtimer/lrtimer.mod.o;  true
