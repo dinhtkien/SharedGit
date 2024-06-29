@@ -1,0 +1,1 @@
+savedcmd_/home/dinhtkienpi5/Workspace/SharedGit/waitqueue/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/dinhtkienpi5/Workspace/SharedGit/waitqueue/Module.symvers -T /home/dinhtkienpi5/Workspace/SharedGit/waitqueue/modules.order -i Module.symvers -e 

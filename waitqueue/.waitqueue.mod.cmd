@@ -1,0 +1,1 @@
+savedcmd_/home/dinhtkienpi5/Workspace/SharedGit/waitqueue/waitqueue.mod := printf '%s\n'   waitqueue.o | awk '!x[$$0]++ { print("/home/dinhtkienpi5/Workspace/SharedGit/waitqueue/"$$0) }' > /home/dinhtkienpi5/Workspace/SharedGit/waitqueue/waitqueue.mod
