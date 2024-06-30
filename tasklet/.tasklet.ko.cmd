@@ -1,0 +1,1 @@
+savedcmd_/home/dinhtkienpi5/Workspace/SharedGit/tasklet/tasklet.ko := ld -r -EL  -maarch64elf -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T arch/arm64/module.lds -o /home/dinhtkienpi5/Workspace/SharedGit/tasklet/tasklet.ko /home/dinhtkienpi5/Workspace/SharedGit/tasklet/tasklet.o /home/dinhtkienpi5/Workspace/SharedGit/tasklet/tasklet.mod.o;  true

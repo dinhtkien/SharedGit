@@ -1,0 +1,1 @@
+savedcmd_/home/dinhtkienpi5/Workspace/SharedGit/tasklet/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/dinhtkienpi5/Workspace/SharedGit/tasklet/Module.symvers -T /home/dinhtkienpi5/Workspace/SharedGit/tasklet/modules.order -i Module.symvers -e 
