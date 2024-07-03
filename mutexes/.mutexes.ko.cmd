@@ -1,0 +1,1 @@
+savedcmd_/home/dinhtkien123/Workspace/SharedGit/mutexes/mutexes.ko := ld -r -EL -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T arch/arm/module.lds -o /home/dinhtkien123/Workspace/SharedGit/mutexes/mutexes.ko /home/dinhtkien123/Workspace/SharedGit/mutexes/mutexes.o /home/dinhtkien123/Workspace/SharedGit/mutexes/mutexes.mod.o;  true
