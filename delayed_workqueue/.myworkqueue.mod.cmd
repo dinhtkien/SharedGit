@@ -1,0 +1,1 @@
+savedcmd_/home/dinhtkien123/Workspace/SharedGit/workqueue/myworkqueue.mod := printf '%s\n'   myworkqueue.o | awk '!x[$$0]++ { print("/home/dinhtkien123/Workspace/SharedGit/workqueue/"$$0) }' > /home/dinhtkien123/Workspace/SharedGit/workqueue/myworkqueue.mod
