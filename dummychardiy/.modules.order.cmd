@@ -1,0 +1,1 @@
+savedcmd_/home/dinhtkienpi5/Workspace/SharedGit/dummychardiy/modules.order := {   echo /home/dinhtkienpi5/Workspace/SharedGit/dummychardiy/chardiy.o; :; } > /home/dinhtkienpi5/Workspace/SharedGit/dummychardiy/modules.order
