@@ -1,5 +1,5 @@
 
-obj-m := AT24C256.o
+obj-m := AT24C256_driver.o
 KERNELDIR ?= /lib/modules/$(shell uname -r)/build
 
 all default: modules
