@@ -1,1 +1,0 @@
-cmd_/home/dinhtkienpi3/Workspace/SharedGit/AT24Cdriver/Module.symvers :=  sed 's/ko$$/o/'  /home/dinhtkienpi3/Workspace/SharedGit/AT24Cdriver/modules.order | scripts/mod/modpost -m -a    -o /home/dinhtkienpi3/Workspace/SharedGit/AT24Cdriver/Module.symvers -e -i Module.symvers -T - 
