@@ -1253,6 +1253,9 @@ deps_/home/dinhtkienpi3/Workspace/SharedGit/AT24Cdriver/AT24C256_driver.o := \
   include/uapi/linux/i2c.h \
   include/linux/delay.h \
   arch/arm/include/asm/delay.h \
+  include/linux/regmap.h \
+    $(wildcard include/config/REGMAP) \
+  include/linux/iopoll.h \
 
 /home/dinhtkienpi3/Workspace/SharedGit/AT24Cdriver/AT24C256_driver.o: $(deps_/home/dinhtkienpi3/Workspace/SharedGit/AT24Cdriver/AT24C256_driver.o)
 

@@ -5,7 +5,25 @@
 #include <linux/i2c.h>
 #include <linux/errno.h>
 #include <linux/delay.h>
+#include <linux/regmap.h>
+#include <linux/random.h>
 // static struct class *eep_class = NULL;
+static bool AT24Cwriteable_reg(struct device *dev, unsigned int reg)
+{
+    if(reg >= 0 && reg <= (u16)0x7FFF)
+    {
+        return true;
+    }
+    return false;
+};
+static bool AT24Creadable_reg(struct device *dev, unsigned int reg)
+{
+    if(reg >= 0 && reg <= (u16)0x7FFF)
+    {
+        return true;
+    }
+    return false;
+};
 static struct AT24C256_node
 {
     char *name;
@@ -16,51 +34,30 @@ static struct AT24C256_node
     char *status;
     u16 bytesize;
 };
-/* Perform read wrapper to eeprom device
-    params: *client: eeprom device need to be read from
-            read_address: starting register address  need to be read from
-            *read_buff: output buffer
-            count: number of byte need to be read
-*/
-static int eeprom_read(struct i2c_client *client, u16 read_address, u8 *read_buff, u16 count, struct AT24C256_node AT24C256_nd)
+static struct regmap *AT24regmap;
+static const struct regmap_config AT24Cregmap_config = 
 {
-    u8 *i2c_rdata;
-    struct i2c_msg i2c_rmessage[2];
-    
-    if (read_address > AT24C256_nd.bytesize)
-    {
-        pr_err("AT24C256 driver: bad read_address");
-        return -EFAULT;
-    }
-
-    i2c_rdata = kmalloc(count + 2, GFP_KERNEL);
-    i2c_rdata[0] = (u8)(read_address >> 8);
-    i2c_rdata[1] = (u8)(read_address && 0xff);
-
-    i2c_rmessage[0].addr = client->addr;
-    i2c_rmessage[0].flags = client->flags;         /* Write */
-    i2c_rmessage[0].len = 2;                      /* Address is 2byte coded */
-    i2c_rmessage[0].buf = i2c_rdata;
-
-    i2c_rmessage[1].addr = client->addr;
-    i2c_rmessage[1].flags = client->flags | I2C_M_RD;             /* We need to read */
-    i2c_rmessage[1].len = 16; 
-    i2c_rmessage[1].buf = (i2c_rdata + 2);
-
-    if (i2c_transfer(client-> adapter, i2c_rmessage, 2) < 0)
-    {
-        pr_err("AT24C256 driver: i2c transfer failed");
-        return -EIO;
-    }
-    read_buff = (i2c_rdata + 2);
-}
+    .reg_bits = 16,
+    .val_bits = 8,
+    .max_register = (u16)0x7FFF,
+    .fast_io = false,
+    .writeable_reg = AT24Cwriteable_reg,
+    .readable_reg = AT24Creadable_reg,
+};
+// static void data_dump(u8 *data, u32 count)
+// {
+//     pr_info("AT24C256 driver: start dumping\n");
+//     for (u32 index = 0; index < count; index++)
+//     {
+//         pr_info("AT24C256 driver:%x", *(data+index));
+//     }
+//     pr_info("AT24C256 driver: done dumping\n");
+// }
 static int AT24C256_probe(struct i2c_client *client,
 			    const struct i2c_device_id *id)
 {
     struct device_node *AT24C256_device_node_p = client->dev.of_node;
-    u8 i2c_rdata[18];
-    struct i2c_msg i2c_rmessage[2];
-    int return_value = 0;
+    u32 i2c_data = 0;
     struct AT24C256_node AT24C256_nd = 
     {
         .name = (char*)of_node_full_name(AT24C256_device_node_p),
@@ -86,27 +83,22 @@ static int AT24C256_probe(struct i2c_client *client,
     }
     pr_info("AT24C256 driver: executing device driver matching\n");
     if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_BYTE_DATA))  return -EIO;
-    /*simple read data with start reg is 0x00, length =16 to test eeprom*/
-    i2c_rdata[0] = (u8)0x00;
-    i2c_rdata[1] = (u8)0x00;
-    i2c_rmessage[0].addr = client->addr;
-    i2c_rmessage[0].flags = client->flags;         /* Write */
-    i2c_rmessage[0].len = 2;                      /* Address is 2byte coded */
-    i2c_rmessage[0].buf = i2c_rdata;          
 
-    i2c_rmessage[1].addr = client->addr;
-    i2c_rmessage[1].flags = client->flags | I2C_M_RD;             /* We need to read */
-    i2c_rmessage[1].len = 16; 
-    i2c_rmessage[1].buf = (i2c_rdata + 2);
-
-    return_value = i2c_transfer(client-> adapter, i2c_rmessage, 2);
-
-    if (return_value < 0)
+    AT24regmap = devm_regmap_init_i2c(client, &AT24Cregmap_config);
+    if (IS_ERR(AT24regmap))
     {
-        pr_err("AT24C256 driver: Error occured when transmit i2c message, error code: %d", return_value);
-        return return_value;
-    }
-    pr_info("AT24C256 driver:transmitted, number of transmitted bytes: %d,i2c data in reg 0x0000 is: %s", return_value, (i2c_rdata + 2));
+        pr_err("Cannot init register mapping to i2c device");
+        return -EFAULT;
+    };
+    //perform write/read in 0x7fff to test eeprom
+    i2c_data = (u32)get_random_u8();
+    regmap_write(AT24regmap, (u16)0x7fff, (u8)i2c_data);
+    pr_info("AT24C256 driver: i2c data to write %d\n", i2c_data);
+    mdelay(5);
+    regmap_read(AT24regmap, (u16)(0x7fff), &i2c_data);
+    mdelay(5);
+    pr_info("AT24C256 driver: read i2c data %d\n", i2c_data);
+
     pr_info("AT24C256 driver: probed\n");
     return 0;
 }
