@@ -7,7 +7,24 @@
 #include <linux/delay.h>
 #include <linux/regmap.h>
 #include <linux/random.h>
-// static struct class *eep_class = NULL;
+
+static struct class *eep_class = NULL;
+static int probed_ndevices = 0;
+static LIST_HEAD(device_list);
+static DEFINE_MUTEX(device_list_lock);
+struct eep_dev {
+    unsigned char *data;
+    struct i2c_client *client;
+    struct mutex eep_mutex;
+    struct list_head    device_entry;
+    dev_t       devt;
+    unsigned    users;
+};
+
+
+
+
+
 static bool AT24Cwriteable_reg(struct device *dev, unsigned int reg)
 {
     if(reg >= 0 && reg <= (u16)0x7FFF)
@@ -58,6 +75,8 @@ static int AT24C256_probe(struct i2c_client *client,
 {
     struct device_node *AT24C256_device_node_p = client->dev.of_node;
     u32 i2c_data = 0;
+    struct device *device = NULL;
+
     struct AT24C256_node AT24C256_nd = 
     {
         .name = (char*)of_node_full_name(AT24C256_device_node_p),
@@ -123,28 +142,33 @@ static struct i2c_driver AT24C256_i2c_driver =
 
 static int __init AT24C256_driver_init (void)
 {
-    int status;
-    /* Claim our 256 reserved device numbers.  Then register a class
-     * that will key udev/mdev to add/remove /dev nodes.  Last, register
-     * the driver which manages those device numbers.
-     */
-    // eep_class = class_create(THIS_MODULE, "eeprom");
-    // if (IS_ERR(eep_class))
-    //     pr_err("error creating eeprom class, exitting\n");
-    //     return PTR_ERR(eep_class);
+    u8 ret_value = 0;
+    eep_class = class_create(THIS_MODULE, "eeprom");
+     if (IS_ERR(eep_class)) 
+     {
+        pr_err("AT24C256 driver: error creating eep class");
+        ret_value = PTR_ERR(eep_class);
+        goto EEP_CLASS_CREATE_FAILED;
+     };
 
-    status = i2c_register_driver(THIS_MODULE, &AT24C256_i2c_driver);
+    if (ret_value = i2c_register_driver(THIS_MODULE, &AT24C256_i2c_driver) < 0) 
+    {
+        pr_err("AT24C256 driver: error registering AT24C256_i2c_driver, error code:%d exitting\n", ret_value);
+        goto I2C_DRIVER_REGISTRATION_FAILED;
+    };
     pr_info("AT24C256 driver: AT24C256_i2c_driver registered\n");
-    if (status < 0)
-        // class_destroy(eep_class);
-        pr_err("AT24C256 driver: error registering AT24C256_i2c_driver, exitting\n");
-        return status;
-    return 0;
+    goto RETURN_LABEL;
+I2C_DRIVER_REGISTRATION_FAILED:
+    class_destroy(eep_class);
+EEP_CLASS_CREATE_FAILED:
+    //nothing to do
+RETURN_LABEL:
+    return ret_value;
 }
 static void __exit AT24C256_driver_exit (void)
 {
     i2c_del_driver(&AT24C256_i2c_driver);
-    // class_destroy(eep_class);
+    class_destroy(eep_class);
     pr_info("AT24C256 driver: AT24C256_i2c_driver unregistered\n");
 }
 module_init(AT24C256_driver_init);

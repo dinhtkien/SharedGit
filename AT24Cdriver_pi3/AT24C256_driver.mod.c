@@ -31,8 +31,10 @@ static const struct modversion_info ____versions[]
 __used __section("__versions") = {
 	{ 0xb1ad28e0, "__gnu_mcount_nc" },
 	{ 0xefd6cf06, "__aeabi_unwind_cpp_pr0" },
-	{ 0x36948ecd, "i2c_register_driver" },
+	{ 0x61907396, "__class_create" },
 	{ 0x92997ed8, "_printk" },
+	{ 0x36948ecd, "i2c_register_driver" },
+	{ 0x3a8831fe, "class_destroy" },
 	{ 0xa10a1794, "of_n_addr_cells" },
 	{ 0x38b32101, "of_n_size_cells" },
 	{ 0x49b71f84, "of_get_property" },
@@ -53,4 +55,4 @@ MODULE_INFO(depends, "regmap-i2c");
 MODULE_ALIAS("of:N*T*CAT24C256");
 MODULE_ALIAS("of:N*T*CAT24C256C*");
 
-MODULE_INFO(srcversion, "46017234139A1B3449C609B");
+MODULE_INFO(srcversion, "6807F75B998A82AD3ACBCB6");
