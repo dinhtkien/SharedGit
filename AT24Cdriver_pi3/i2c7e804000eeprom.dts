@@ -2,7 +2,7 @@
 /plugin/;
 /{
 	fragment@0 {
-		target = <0x2b>;
+		target = <0x2a>;
 		__overlay__ {
 		#address-cells = <0x01>;
 		#size-cells = <0x00>;
