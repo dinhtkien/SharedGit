@@ -107,12 +107,16 @@ ssize_t eep_read(struct file *filp, char __user *buf,
     if (*f_pos >= eeprom->AT24C256_node_obj.bytesize)
     {
         mutex_unlock(&eeprom->eep_mutex);
-        pr_err("AT24C256 driver: f_pos exceeded\n");
+        pr_info("AT24C256 driver: f_pos exceeded\n");
         goto FPOS_EXCEEDED;
     } 
     if (*f_pos + count > eeprom->AT24C256_node_obj.bytesize) count = eeprom->AT24C256_node_obj.bytesize - *f_pos;
     if (count > eeprom->AT24C256_node_obj.bytesize) count = eeprom->AT24C256_node_obj.bytesize;
-    regmap_bulk_read(eeprom->eep_regmap, (u16)(*f_pos), eeprom->data, count);
+    if ((ret_value = regmap_bulk_read(eeprom->eep_regmap, (u16)(*f_pos), eeprom->data, count)) < 0)
+    {
+        pr_err("AT24C256 driver: regmap_bulk_read failed: %d\n", ret_value);
+        goto I2C_BULK_READ_FAILED;
+    };
     //mdelay(5);
     pr_info("AT24C256 driver: read i2c data %s\n", eeprom->data);
     if (copy_to_user(buf, eeprom->data, count) != 0) 
@@ -128,6 +132,8 @@ ssize_t eep_read(struct file *filp, char __user *buf,
     goto READ_RETURN_LABEL;
 COPY_TO_USER_FAILED:
     pr_info("AT24C256 driver: COPY_TO_USER_FAILED\n");
+I2C_BULK_READ_FAILED:
+    pr_info("AT24C256 driver: I2C_BULK_READ_FAILED\n");
 FPOS_EXCEEDED:
     pr_info("AT24C256 driver: FPOS_EXCEEDED\n");
 EEP_MUTEX_LOCK_FAILED:
